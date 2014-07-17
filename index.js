@@ -51,17 +51,17 @@ function getMediaTitle(fullLinkText) {
 function getParagraphsUntilMediaMention(text, mediaType) {
     paragraphs = text.split('\n');
     var re = new RegExp('\\b' + mediaType + '\\b', 'i');
-    var output = '';
+    var output = [];
     var index = 0;
     while(index <= paragraphs.length) {
         if(re.test(paragraphs[index]) || mediaType === ''){
             // If there's already stuff in there make a new line,
             // otherwise just return the current paragraph
             return output.length > 0 ?
-            output + '\n\n' + paragraphs[index] :
+            output.join('\n') + paragraphs[index] :
             paragraphs[index];
         }
-        output += paragraphs[index]; // Add whatever was found to output buffer
+        output.push(paragraphs[index]); // Add whatever was found to output buffer
         index += 1;
     }
     // Word anime wasn't found, return falsey value
