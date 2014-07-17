@@ -31,7 +31,7 @@ function getParagraphsUntilMediaMention(text, mediaType) {
     return '';
 }
 
-exports.getWikipediaContent = function(mediaTitle, mediaType, callback) {
+exports.synopsis = function(mediaTitle, mediaType, callback) {
     if (mediaType === null || mediaType === undefined) {
         mediaType = '';
     }
