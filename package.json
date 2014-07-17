@@ -2,7 +2,7 @@
   "name": "media-synopsis",
   "version": "0.0.1",
   "description": "Get a synopsis for a Movie, Anime, Book or some other media using Google and Wikipedia.",
-  "main": "wiki.js",
+  "main": "index.js",
   "dependencies": {
     "google": "~0.3.3",
     "request": "~2.37.0",
