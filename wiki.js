@@ -31,7 +31,7 @@ function getParagraphsUntilMediaMention(text, mediaType) {
     return '';
 }
 
-function getWikipediaContent(mediaTitle, mediaType, callback) {
+exports.getWikipediaContent = function(mediaTitle, mediaType, callback) {
     if (mediaType === null || mediaType === undefined) {
         mediaType = '';
     }
@@ -45,24 +45,19 @@ function getWikipediaContent(mediaTitle, mediaType, callback) {
             return;
         }
         // Sometimes this will be 'List of x Episodes' for TV shows. Example: 're hamatora'
-        console.log(getMediaTitle(links[0].title));
-        console.log();
+        var title = getMediaTitle(links[0].title);
         request(links[0].link, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             data = extractor(body);
             var releventParagraphs = getParagraphsUntilMediaMention(data.text, mediaType);
-            callback(undefined, releventParagraphs.replace(/(\[.+\])/g,'')); // Remove annotations
+            callback(undefined,
+            {
+                title: title,
+                content: releventParagraphs.replace(/(\[.+\])/g,'') // Remove annotations
+            });
         } else {
             callback(error);
         }
     });
     });
-}
-
-getWikipediaContent('gedo senki', 'anime', function(err, text) {
-    if (err) {
-        console.log(err);
-        return;
-    }
-    console.log(text);
-});
+};
