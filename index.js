@@ -41,6 +41,10 @@ function getMediaTitle(fullLinkText) {
     if(listOfEpsRegex) {
         return listOfEpsRegex[1];
     }
+    var filmRegex = /(.*) \(film\)/.exec(title);
+    if(filmRegex) {
+        return filmRegex[1];
+    }
     return title;
 }
 
