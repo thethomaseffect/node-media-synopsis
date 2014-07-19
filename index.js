@@ -6,7 +6,12 @@ exports.synopsis = function(mediaTitle, mediaType, callback) {
     if (mediaType === null || mediaType === undefined) {
         mediaType = '';
     }
-    google(mediaTitle + ' ' + mediaType + ' site:wikipedia.org',
+    // Allow providing a string for mediaType but convert it to array
+    // to simplify code
+    if (typeof mediaType === 'string'){
+        mediaType = [mediaType];
+    }
+    google(mediaTitle + ' ' + mediaType[0] + ' site:wikipedia.org',
         function(err, next, links){
             if (err) {
                 callback(err);
@@ -21,7 +26,7 @@ exports.synopsis = function(mediaTitle, mediaType, callback) {
             request(links[0].link, function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 data = extractor(body);
-                var releventParagraphs = getParagraphsUntilMediaMention(data.text, mediaType);
+                var releventParagraphs = getParagraphsUntilMediaMention(data.text, mediaType[0]);
                 callback(undefined,
                 {
                     title: title,
