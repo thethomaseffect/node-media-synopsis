@@ -4,13 +4,14 @@ var google = require('google');
 
 exports.synopsis = function(mediaTitle, mediaType, callback) {
     if (mediaType === null || mediaType === undefined) {
-        mediaType = '';
+        mediaType = [''];
     }
     // Allow providing a string for mediaType but convert it to array
     // to simplify code
     if (typeof mediaType === 'string'){
         mediaType = [mediaType];
     }
+    // Only use first media type to keep things simple
     google(mediaTitle + ' ' + mediaType[0] + ' site:wikipedia.org',
         function(err, next, links){
             if (err) {
@@ -22,15 +23,17 @@ exports.synopsis = function(mediaTitle, mediaType, callback) {
                 return;
             }
             // Sometimes this will be 'List of x Episodes' for TV shows. Example: 're hamatora'
-            var title = getMediaTitle(links[0].title);
+            var title = getMediaTitle(links[0].title.trim());
             request(links[0].link, function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 data = extractor(body);
-                var releventParagraphs = getParagraphsUntilMediaMention(data.text, mediaType[0]);
+                getContentText(data.text, mediaType);
+                var releventParagraphs = getContentText(data.text, mediaType);
                 callback(undefined,
                 {
                     title: title,
-                    content: releventParagraphs.replace(/(\[.+\])/g,'') // Remove annotations
+                    content: removeUnwantedChars(releventParagraphs, title) +
+                        '\n\nSource: [Wikipedia](' + links[0].link + ')'
                 });
         } else {
             callback(error);
@@ -53,30 +56,28 @@ function getMediaTitle(fullLinkText) {
     return title;
 }
 
-/**
-Three possible return scenarios:
-
-1. First paragraph contains the mediaType, return it
-2. First paragraph does not contain the mediaType but the forth down
-or less does, return 0 - paragraph containing media term
-3. First 4 paragraphs do not contain mediaType, return first paragraph
-*/
-function getParagraphsUntilMediaMention(text, mediaType) {
+getContentText = function(text, mediaTypes) {
     paragraphs = text.split('\n');
-    var re = new RegExp('\\b' + mediaType + '\\b', 'i');
-    var output = [];
-    var index = 0;
-    while(index <= paragraphs.length) {
-        if(re.test(paragraphs[index]) || mediaType === ''){
-            // If there's already stuff in there make a new line,
-            // otherwise just return the current paragraph
-            return output.length > 0 ?
-            output.join('\n') + paragraphs[index] :
-            paragraphs[index];
-        }
-        output.push(paragraphs[index]); // Add whatever was found to output buffer
-        index += 1;
+    // This will build an OR type regex for each media type
+    var re = new RegExp('\\b' + mediaTypes.join('\\b|\\b') + '\\b', 'i');
+    // Media type(s) is in first paragraph, return it
+    if(re.test(paragraphs[0])) {
+        return paragraphs[0];
     }
-    // Word anime wasn't found, return falsey value
-    return '';
+    // Media type(s) in in first 4 parapraphs, return all
+    // paragraphs until it's mention
+    for(var i = 1; i < 4; i++) {
+        if(re.test(paragraphs[i])) {
+            return paragraphs.slice(0, i + 1).join('\n');
+        }
+    }
+    // Media type not found, return first paragraph
+    return paragraphs[0];
+};
+
+function removeUnwantedChars(text, title) {
+    var AsianPronunciationsRegex = new RegExp(title + '\\(.*?\\) ', 'i');
+    return text
+        .replace(AsianPronunciationsRegex, title) // Removes Asian pronunciations
+        .replace(/(\[.*?\])/ig, ''); // Removes links to sources
 }
