@@ -48,6 +48,14 @@ function getMediaTitle(fullLinkText) {
     return title;
 }
 
+/**
+Three possible return scenarios:
+
+1. First paragraph contains the mediaType, return it
+2. First paragraph does not contain the mediaType but the forth down
+or less does, return 0 - paragraph containing media term
+3. First 4 paragraphs do not contain mediaType, return first paragraph
+*/
 function getParagraphsUntilMediaMention(text, mediaType) {
     paragraphs = text.split('\n');
     var re = new RegExp('\\b' + mediaType + '\\b', 'i');
