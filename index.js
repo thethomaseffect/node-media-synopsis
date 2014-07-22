@@ -76,7 +76,8 @@ getContentText = function(text, mediaTypes) {
 };
 
 function removeUnwantedChars(text, title) {
-    var AsianPronunciationsRegex = new RegExp(title + '\\(.*?\\) ', 'i');
+    // TODO: Replace [\s\S] with . once issue with unfluff is resolved
+    var AsianPronunciationsRegex = new RegExp(title + '\\([\\s\\S]*?\\) ', 'i');
     return text
         .replace(AsianPronunciationsRegex, title) // Removes Asian pronunciations
         .replace(/(\[.*?\])/ig, ''); // Removes links to sources
