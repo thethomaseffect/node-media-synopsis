@@ -6,9 +6,11 @@
   "dependencies": {
     "google": "~0.3.3",
     "request": "~2.37.0",
-    "unfluff": "~0.2.0",
-    "when": "~3.3.1",
-    "wikipedia-js": "~0.0.6"
+    "unfluff": "~0.2.0"
+  },
+    "repository": {
+    "type": "git",
+    "url": "https://github.com/thethomaseffect/node-media-synopsis"
   },
   "devDependencies": {},
   "scripts": {
