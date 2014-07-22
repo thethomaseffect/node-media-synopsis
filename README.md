@@ -3,6 +3,11 @@ Media Synopsis
 
 Media Synopsis lets you get a synopsis for books, movies, video games, anime and more.
 
+Installation
+------------
+
+`npm install media-synopsis`
+
 Usage
 -----
 
