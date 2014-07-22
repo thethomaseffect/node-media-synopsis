@@ -1,6 +1,6 @@
 {
   "name": "media-synopsis",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Get a synopsis for a Movie, Anime, Book or some other media using Google and Wikipedia.",
   "main": "index.js",
   "dependencies": {
@@ -12,13 +12,26 @@
     "type": "git",
     "url": "https://github.com/thethomaseffect/node-media-synopsis"
   },
+  "bugs": {
+    "url": "https://github.com/thethomaseffect/node-media-synopsis/issues"
+  },
+  "readmeFilename": "README.md",
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "wikipedia"
+    "anime",
+    "movie",
+    "media",
+    "summery",
+    "wikipedia",
+    "video game",
+    "media-synopsis"
   ],
-  "author": "Thomas Geraghty",
+  "author": {
+    "name": "Thomas Geraghty",
+    "email": "thethomaseffect@gmail.com"
+  },
   "license": "MIT"
 }
