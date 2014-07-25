@@ -48,14 +48,14 @@ It then visits the Wikipedia page and attempts to get a synopsis for the media t
 
 This library was written to be used for generating placeholder text on a media collector's site before being replaced with real content. Linking back to Wikipedia as the source makes it nice and legal too so you might mind it useful if you want to try and provide feedback to the user that the title they're typing for a piece of media is correct.
 
-This library has one other use: Auto-correcting media names based on the title of the Wikipedia article. This may be of limited usefulness but it's incredibly good for getting widely accepted titles for Japanese Anime (e.g. 'mahouka' returns 'The Irregular at Magic High School').
+This library has one other use: Auto-correcting media names based on the title of the Wikipedia article. This may be of limited usefulness but it's useful for getting widely accepted titles for Japanese Anime (e.g. 'mahouka' returns 'The Irregular at Magic High School').
 
 API
 ---
 
 ###`synopsis(mediaTitle, [mediaTypes], callback)`
 
-mediaTitle is a string, mediaTypes is an array of strings, or alternatively if there is only one a string can be provided. Callback is a function that should take two params: error and response.
+mediaTitle is a string, mediaTypes is an array of strings, or if there is only one a string can be provided. Callback is a function that should take two params: error and response.
 
 Returns an object with a `title` and `content` property. The `title` is a cleaned up Wikipedia title for the page, with things like ' - Wikipedia, the free encyclopedia' and '(film)' removed. The content is the synopsis of the media based on 1 - 4 of the first paragraphs on the media's Wikipedia page. It removes things like links to sources and Asian pronunciations (quite basic right now).
 
@@ -67,4 +67,4 @@ Only real-world use can help improve the code that cleans up the content removin
 Tests?
 ------
 
-Eheheheh yeah, this library is like one big side effect. Tests this early for stuff like the content and title clean ups would have to be updated with every change and ultimately not really help all that much. I'm usually super pro-testing so if the library ever goes >150 lines I'll start breaking out functions and writing tests for the pure parts. Right now though linking to source wikipedia page and to the output and explaining what should be different in an issue is good enough.
+Eheheheh yeah, this library is like one big side effect. Tests this early for stuff like the content and title clean ups would have to be updated with every change and not help all that much. I'm usually super pro-testing so if the library ever goes >150 lines I'll start breaking out functions and writing tests for the pure parts. Right now though linking to source wikipedia page and to the output and explaining what should be different in an issue is good enough.
