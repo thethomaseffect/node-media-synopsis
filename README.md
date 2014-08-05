@@ -46,7 +46,7 @@ Media Synopsis takes the first Google result for mediaTitle + first provided med
 
 It then visits the Wikipedia page and attempts to get a synopsis for the media types you provided. Since the Wikipedia page may not be just the media you're looking for, it checks the first 4 paragraphs for your media types. If none of them are found, or you didn't provide any then only the first paragraph is returned. If they are found, then every paragraph from the first to the one where they were found inclusive will be returned.
 
-This library was written to be used for generating placeholder text on a media collector's site before being replaced with real content. Linking back to Wikipedia as the source makes it nice and legal too so you might mind it useful if you want to try and provide feedback to the user that the title they're typing for a piece of media is correct.
+This library was written to be used for generating placeholder text on a media collector's site before being replaced with real content. Linking back to Wikipedia as the source makes it nice and legal too so you might find it useful if you want to try and provide feedback to the user that the title they're typing for a piece of media is correct.
 
 This library has one other use: Auto-correcting media names based on the title of the Wikipedia article. This may be of limited usefulness but it's useful for getting widely accepted titles for Japanese Anime (e.g. 'mahouka' returns 'The Irregular at Magic High School').
 
