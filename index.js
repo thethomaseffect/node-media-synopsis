@@ -26,7 +26,7 @@ exports.synopsis = function(mediaTitle, mediaType, callback) {
             var title = getMediaTitle(links[0].title.trim());
             request(links[0].link, function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                data = extractor(body);
+                var data = extractor(body);
                 getContentText(data.text, mediaType);
                 var releventParagraphs = getContentText(data.text, mediaType);
                 callback(undefined,
@@ -56,8 +56,8 @@ function getMediaTitle(fullLinkText) {
     return title;
 }
 
-getContentText = function(text, mediaTypes) {
-    paragraphs = text.split('\n');
+function getContentText(text, mediaTypes) {
+    var paragraphs = text.split('\n');
     // This will build an OR type regex for each media type
     var re = new RegExp('\\b' + mediaTypes.join('\\b|\\b') + '\\b', 'i');
     // Media type(s) is in first paragraph, return it
@@ -73,7 +73,7 @@ getContentText = function(text, mediaTypes) {
     }
     // Media type not found, return first paragraph
     return paragraphs[0];
-};
+}
 
 function removeUnwantedChars(text, title) {
     // TODO: Replace [\s\S] with . once issue with unfluff is resolved
