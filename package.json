@@ -1,24 +1,35 @@
 {
   "name": "media-synopsis",
-  "version": "0.1.1",
-  "description": "Get a synopsis for a Movie, Anime, Book or some other media using Google and Wikipedia.",
-  "main": "index.js",
-  "dependencies": {
-    "google": "~0.3.3",
-    "request": "~2.37.0",
-    "unfluff": "~0.5.0"
+  "version": "1.0.0",
+  "description": "Get a synopsis for a movie, anime, book, or other media from Wikipedia.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "tsc --noEmit && npm run build && vitest run",
+    "lint": "eslint .",
+    "prepublishOnly": "npm run lint && npm test"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/thethomaseffect/node-media-synopsis"
+    "url": "git+https://github.com/thethomaseffect/node-media-synopsis.git"
   },
   "bugs": {
     "url": "https://github.com/thethomaseffect/node-media-synopsis/issues"
-  },
-  "readmeFilename": "README.md",
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "anime",
@@ -33,5 +44,17 @@
     "name": "Thomas Geraghty",
     "email": "thethomaseffect@gmail.com"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.5",
+    "eslint": "^10.12.0",
+    "jiti": "^2.7.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.2",
+    "vitest": "^5.0.4"
+  }
 }

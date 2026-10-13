@@ -1,0 +1,37 @@
+# Publishes when a v* tag is pushed and the tag matches package.json.
+# npmjs.com must list this repo and publish.yml as a trusted publisher
+# with direct "npm publish" allowed. Node 24 supplies npm 11.5.1+, which
+# trusted publishing requires. See CLAUDE.md.
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false
+      - name: Check tag matches package version
+        shell: bash
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          version="$(node -e "process.stdout.write(JSON.parse(require('node:fs').readFileSync('package.json','utf8')).version)")"
+          if [ "$tag" != "$version" ]; then
+            echo "Tag v${tag} does not match package.json version ${version}"
+            exit 1
+          fi
+      - run: npm ci
+      - run: npm test
+      - run: npm run lint
+      - run: npm publish --access public

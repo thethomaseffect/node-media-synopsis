@@ -1,70 +1,75 @@
-Media Synopsis
-==============
+# Media Synopsis
 
-Media Synopsis lets you get a synopsis for books, movies, video games, anime and more.
+Media Synopsis returns a short synopsis for a movie, book, anime, video game, or other media title. It reads the lead section of the matching English Wikipedia article and cleans it up for display.
 
-Installation
-------------
+Requires Node.js 20 or newer.
 
-`npm install media-synopsis`
+## Installation
 
-Usage
------
-
-```javascript
-var synopsis = require('media-synopsis').synopsis;
-
-synopsis('beyblade', ['anime', 'Japanese animated'], function(err, text) {
-    if (err) {
-        console.log(err);
-        return;
-    }
-    console.log(text.title +
-        '\n=======================================\n\n' +
-        text.content);
-});
+```bash
+npm install media-synopsis
 ```
 
+## Usage
 
-Prints:
+The package is an ES module.
+
+```javascript
+import { synopsis } from 'media-synopsis';
+
+const text = await synopsis('beyblade', ['anime', 'Japanese animated']);
+console.log(text.title +
+    '\n=======================================\n\n' +
+    text.content);
+```
+
+Prints something like:
 
 ```markdown
 Beyblade
 =======================================
 
-Beyblade, known in Japan as Explosive Shoot Beyblade ( Bakuten Shūto Beiburēdo?), is a Japanese manga series written and illustrated by Takao Aoki in order to promote sales of spinning tops called "Beyblades". Originally serialized in CoroCoro Comic from January, 2000 to December, 2003, the individual chapters were collected and published in 14 tankōbon by Shogakukan. The series focuses on a group of kids who form teams with which they battle one another using Beyblades.
+Beyblade, known in Japan as Bakuten Shoot Beyblade, is a Japanese manga series written and illustrated by Takao Aoki, created to promote Takara's Beyblade spinning tops. The series focuses on a group of kids who form teams, which battle one another using Beyblades. It was serialized in Shogakukan's children's manga magazine CoroCoro Comic from August 1999 to June 2004, with its chapters collected and published in 14 tankōbon volumes. It was licensed for English release in North America by Viz Media and in Singapore, Australia and New Zealand by Chuang Yi.
 
-The manga is licensed for English language release in North America by Viz Media. An anime adaptation, also titled Beyblade and spanning 51 episodes, aired in Japan on TV Tokyo from January 8, 2001 to December 24, 2001. The second, Beyblade V-Force, ran for another 51 episodes from January 7, 2002 until December 30, 2002. Beyblade G-Revolution, the third and final adaptation, also spanned 52 episodes (the last two episodes were released together as a double-length special in Japan) and aired from January 6, 2003, until its conclusion on December 28, 2003. Nelvana licensed the anime for an English-language release. Takara Tomy also developed the Beyblade toy line.
+An anime adaptation by Madhouse aired in Japan on TV Tokyo from January to December 2001 and was followed by two sequel series, Beyblade V-Force and Beyblade G-Revolution, and the 2002 film Beyblade: Fierce Battle all three by Nippon Animedia, a partnership between Nippon Animation, Takara, Agatsuma and Epoch. Nelvana licensed and produced English-language adaptations of the anime series and the film.
 
-Source: [Wikipedia](http://en.wikipedia.org/wiki/Beyblade)
-
+Source: [Wikipedia](https://en.wikipedia.org/wiki/Beyblade_(manga))
 ```
-How it works?
--------------
 
-Media Synopsis takes the first Google result for mediaTitle + first provided mediaType + site:wikipedia.org. So for the example above it gets the first Google result for 'beyblade anime site:wikipedia.org'.
+The wording comes from the current Wikipedia article, so it will change as that article changes.
 
-It then visits the Wikipedia page and attempts to get a synopsis for the media types you provided. Since the Wikipedia page may not be just the media you're looking for, it checks the first 4 paragraphs for your media types. If none of them are found, or you didn't provide any then only the first paragraph is returned. If they are found, then every paragraph from the first to the one where they were found inclusive will be returned.
+## How it works
 
-This library was written to be used for generating placeholder text on a media collector's site before being replaced with real content. Linking back to Wikipedia as the source makes it nice and legal too so you might find it useful if you want to try and provide feedback to the user that the title they're typing for a piece of media is correct.
+`synopsis` searches the English Wikipedia API for the media title plus the first media type you passed. For the example above, the search is `beyblade anime`. It takes the first result and reads that page's lead section as plain text.
 
-This library has one other use: Auto-correcting media names based on the title of the Wikipedia article. This may be of limited usefulness but it's useful for getting widely accepted titles for Japanese Anime (e.g. 'mahouka' returns 'The Irregular at Magic High School').
+The lead is split into paragraphs. The first four are checked for any of the media types you provided. If one of those paragraphs mentions a type, every paragraph from the start through that one is kept. If none of them match, or you did not pass any types, only the first paragraph is kept.
 
-API
----
+The page title is cleaned up for use as a display name. A Wikipedia suffix is removed, `List of X episodes` becomes `X`, and a trailing disambiguator such as `(film)` or `(manga)` is removed. That last part is what turns a loose query such as `mahouka` into `The Irregular at Magic High School`.
 
-###`synopsis(mediaTitle, [mediaTypes], callback)`
+The synopsis text drops Japanese and Hepburn pronunciation parentheses, and bracketed citation markers such as `[1]`. A Markdown link to the Wikipedia article is appended. Linking back to Wikipedia is what makes the placeholder text reasonable to show while a real description is still missing.
 
-mediaTitle is a string, mediaTypes is an array of strings, or if there is only one a string can be provided. Callback is a function that should take two params: error and response.
+## API
 
-Returns an object with a `title` and `content` property. The `title` is a cleaned up Wikipedia title for the page, with things like ' - Wikipedia, the free encyclopedia' and '(film)' removed. The content is the synopsis of the media based on 1 - 4 of the first paragraphs on the media's Wikipedia page. It removes things like links to sources and Asian pronunciations (quite basic right now).
+### `synopsis(mediaTitle, [mediaTypes])`
 
-Contributing
-------------
+`mediaTitle` is a string.
 
-Only real-world use can help improve the code that cleans up the content removing the irrelevant and making sure the title doesn't have anything extra included. If you spot unexpected output then please create an issue or submit a pull request and I'll try to fix.
+`mediaTypes` is an optional array of strings. Only the first non-empty type is added to the Wikipedia search. All of them are used when choosing paragraphs.
 
-Tests?
-------
+The returned Promise resolves to an object with:
 
-Eheheheh yeah, this library is like one big side effect. Tests this early for stuff like the content and title clean ups would have to be updated with every change and not help all that much. I'm usually super pro-testing so if the library ever goes >150 lines I'll start breaking out functions and writing tests for the pure parts. Right now though linking to source wikipedia page and to the output and explaining what should be different in an issue is good enough.
+- `title` — the cleaned Wikipedia title
+- `content` — the synopsis, including a `Source: [Wikipedia](...)` line
+
+The Promise rejects with an `Error` when Wikipedia has no matching page or the request fails.
+
+## Contributing
+
+The cleanup rules are deliberately small. If a real title comes back with a pronunciation, citation, or disambiguator still attached, open an issue with the query, the Wikipedia URL, and what the title or synopsis should have been.
+
+```bash
+npm test
+npm run lint
+```
+
+Vitest covers title cleanup, paragraph selection, pronunciation stripping, and the Wikipedia client with a stand-in for `fetch`. The tests do not call Wikipedia.
